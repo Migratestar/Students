@@ -1,0 +1,222 @@
+# 学生成绩管理系统
+import re
+import json
+
+# 定义学生类
+class student():
+    def __init__(self, id, name, sex, age, clas):
+        self.id = id
+        self.name = name
+        self.sex = sex
+        self.age = age
+        self.clas = clas
+
+# 返回学号、姓名、性别、年龄、班级
+    def __str__(self):
+        return f"学号:{self.id}\n姓名:{self.name()}\n性别:{self.sex()}\n年龄:{self.age()}\n班级:{self.clas()}\n"
+
+# 小学生
+class Pss(student):
+    def __init__(self, id, name, sex, age, clas, yw, sx, en):
+        super().__init__(id, name, sex, age, clas)
+        self.yw = yw
+        self.sx = sx
+        self.en = en
+
+# 返回语文、数学、英语成绩
+    def __str__(self):
+        return f"语文:{self.yw}\n数学:{self.sx()}\n英语:{self.en()}\n"
+
+# 中学生继承小学生
+class Mss(Pss):
+    def __init__(self, id, name, sex, age, clas, yw, sx, en, dl, ls):
+        super().__init__(id, name, sex, age, clas, yw, sx, en)
+        self.dl = dl
+        self.ls = ls
+
+# 返回地理、历史成绩
+    def __str__(self):
+        return f"地理:{self.dl}\n历史:{self.ls()}\n"
+
+# 大学生
+class Cs(student):
+    def __init__(self, id, name, sex, age, clas, zy, cxsj, en, gdsx):
+        super().__init__(id, name, sex, age, clas)
+        self.zy = zy
+        self.cxsj = cxsj
+        self.en = en
+        self.gdsx = gdsx
+
+# 返回专业、程序设计、英语、高等数学成绩
+    def __str__(self):
+        return f"专业:{self.zy}\n程序设计:{self.cxsj()}\n英语:{self.en()}\n高等数学:{self.gdsx()}\n"
+
+# 添加功能
+def add(self):
+    print(
+         '''请你输入想要新建的学生类型:
+         1.小学生
+         2.中学生
+         3.大学生''')
+    s = int(input())
+    if s == 1:
+        print("请输入小学生所需要的信息:学号、姓名、性别、年龄、班级、语文成绩、数学成绩和英语成绩")
+        inf = input().split(' ')
+        if (len(inf) == 8):
+            student.update(
+                {inf[1]: Pss(inf[0], inf[1], inf[2], inf[3], inf[4], inf[5], inf[6], inf[7]).dic})
+            print("您已添加成功,可在信息列表里查询")
+            Save(student)
+        else:
+            print("您的输入有错误,请重新输入")
+            add(student)
+    if s == 2:
+        print("请输入中学生所需要的信息:学号、姓名、性别、年龄、班级、语文成绩、数学成绩、英语成绩、地理成绩、历史成绩")
+        inf = input().split(' ')
+        if (len(inf) == 10):
+            student.update(
+                {inf[1]: Mss(inf[0], inf[1], inf[2], inf[3], inf[4], inf[5], inf[6], inf[7], inf[8], inf[9]).dic})
+            print("您已添加成功,可在信息列表里查询")
+            Save(student)
+        else:
+            print("您的输入有错误,请重新输入")
+            add(student)
+    if s == 3:
+        print("请输入大学生所需要的信息:学号、姓名、性别、年龄、班级、专业、英语、程序设计、高等数学")
+        inf = input().split(' ')
+        if (len(inf == 9)):
+            student.update(
+                {inf[1]: Cs(inf[0], inf[1], inf[2], inf[3], inf[4], inf[5], inf[6], inf[7], inf[8]).dic})
+            print("您已添加成功,可在信息列表里查询")
+            Save(student)
+        else:
+            print("您的输入有错误,请重新输入")
+            add(student)
+
+# 查询功能
+def find(student, *arg):
+    print('''请输入你已知的信息:如姓名、学号等
+            输入形式为如:姓名:×××''')
+    key = input().split('：')
+    key[0] = str(key[0])
+    key[1] = str(key[1])
+    for i in student:
+        if student[i].get(key[0]) == key[1]:
+            if (arg == ()):
+                print(student[i])
+            else:
+                if (arg[0] == 'edit'):
+                    print("该学生信息为", student[i])
+                    print("请重新输入上述属性进行重新修改")
+                    change = input()
+                    change = re.split('[ :]', change)
+                    if (len(change) != 0):
+                        for h in change:
+                            if student[i].get(h) != None:
+                                student[i][h] = change[change.index(h) + 1]
+                if (arg[0] == 'delete'):
+                    student.pop(i)
+                    print("你已经删除成功!")
+                    break
+                Save(student)
+
+# 显示功能
+def print(student):
+    print("学生信息表如下:")
+    for i in student:
+        print(student[i])
+
+# 编辑功能
+def edit(student):
+    find(student, 'edit')
+
+# 删除功能
+def delete(student):
+    find(student, 'delete')
+
+# 统计功能
+def statistics(student):
+    print('''请输入您想统计的内容:
+        如:学生人数,性别统计,年龄统计等''')
+    s = input()
+    if s == '学生人数':
+        print("学生人数为", len(student))
+    if s == '性别统计':
+        print('输入你想统计的性别:男或女')
+        sex = input()
+        sexNan = []
+        sexNv = []
+        for i in student:
+            if student[i]['性别'] == sex:
+                sexNan.append(i)
+            else:
+                sexNv.append(i)
+        if sex == '男':
+            print('该性别人数为', len(sexNan))
+        if sex == '女':
+            print("性别为女的人数为", len(sexNv))
+    if s == '年龄统计':
+        print('请输入你想要统计的年龄岁数')
+        age = input()
+        ageCol = []
+        for i in student:
+            if age == student[i]['年龄']:
+                ageCol.append(i)
+        print("该年龄的人数为", len(ageCol))
+
+# 保存功能
+def save(student):
+    with open('./student.json','w+',encoding='utf-8') as fp:
+        json.dump(student,fp,ensure_ascii=False)
+
+# 读取功能
+#def read(student):
+
+# 排序功能
+#def sort(student):
+
+
+
+# 菜单
+def meau(student):
+    print("欢迎使用学生成绩管理系统".center(40, "*"))
+    print("作者：lsy  版本：1.0\n".center(45))
+    print('''请输入你想要的功能号码:
+1.添加功能
+2.查询功能
+3.显示功能
+4.编辑功能
+5.删除功能
+6.统计功能
+7.保存功能
+8.读取功能
+9.排序功能''')
+    s=int(input())
+    if s == 1:# "1":"添加功能"
+        add(student)
+    if s == 2:# "2":"查询功能"
+        find(student)
+    if s == 3:# "3":"显示功能"
+        print(student)
+    if s == 4:# "4":"编辑功能"
+        edit(student)
+    if s == 5:# "5":"删除功能"
+        delt(student)
+    if s == 6:# "6":"统计功能"
+        statistics(student)
+    if s == 7:# "7":"保存功能"
+        save(student)
+    if s == 8:# "8":"读取功能"
+        read(student)
+    if s == 9:# "9":"排序功能"
+        sort(student)
+    else:
+        exit()
+    meau(student)
+
+
+if __name__ == "__main__":
+    student={}
+    with open("./student.json",'r',encoding='utf-8') as fp:
+        student=json.load(fp)
+    meau(student)
